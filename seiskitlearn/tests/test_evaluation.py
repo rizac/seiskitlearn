@@ -6,8 +6,8 @@ Created on Sep 23, 2016
 import unittest
 import numpy as np
 from sklearn.linear_model.logistic import LogisticRegression, LogisticRegressionCV
-from core.classification import fix_array
-from core.evaluation import Eval, classindex, classlabel
+from seiskitlearn.core.classification import fix_array
+from seiskitlearn.core.evaluation import Eval, classindex, classlabel
 import pytest
 from sklearn.metrics.classification import brier_score_loss, log_loss
 

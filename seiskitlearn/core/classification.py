@@ -15,7 +15,6 @@ from sklearn.utils.validation import _num_samples
 import scipy.sparse as sp
 from sklearn.base import clone, is_classifier
 # from itertools import product, izip
-from core.evaluation import Eval
 from sklearn.linear_model.logistic import LogisticRegression
 # from sklearn.utils.multiclass import unique_labels
 # from sklearn.cross_validation import train_test_split
@@ -29,6 +28,7 @@ from sklearn.model_selection import GridSearchCV
 # from sklearn.linear_model.logistic import LogisticRegression, LogisticRegressionCV
 # from sklearn.metrics.classification import precision_recall_fscore_support
 
+from seiskitlearn.core.evaluation import Eval
 
 # def score(estimator, X, y=None, scoring='f1', cv=10, n_jobs=1, verbose=1,
 #           fit_params=None, pre_dispatch='2*n_jobs'):

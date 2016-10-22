@@ -7,7 +7,7 @@ Created on Oct 18, 2016
 # from __future__ import unicode_literals
 import unittest
 import numpy as np
-from core.utils import Formatter
+from seiskitlearn.core.utils import Formatter
 import sys
 
 

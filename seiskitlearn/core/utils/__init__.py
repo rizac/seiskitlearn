@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 import sys
 import numpy as np
-from numpy import empty_like
 from itertools import izip, count, cycle
 
 

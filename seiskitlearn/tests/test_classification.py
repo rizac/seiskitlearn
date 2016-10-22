@@ -4,7 +4,7 @@ Created on Sep 25, 2016
 @author: riccardo
 '''
 import unittest
-from core.classification import fix_array, fix_data # , score, predict, predict_proba
+from seiskitlearn.core.classification import fix_array, fix_data # , score, predict, predict_proba
 import pytest
 import numpy as np
 from sklearn.linear_model.logistic import LogisticRegression

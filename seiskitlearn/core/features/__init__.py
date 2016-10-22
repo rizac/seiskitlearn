@@ -5,6 +5,7 @@
 import numpy as np
 import pylab
 from scipy.optimize import curve_fit
+from itertools import count, izip, cycle
 
 
 def sigmoid(x, L, x0, k):
@@ -36,6 +37,40 @@ def lintrans(x, min_=0, max_=1):
 def sigmoid_fit(x, y, *args, **kwargs):
     return curve_fit(sigmoid, xdata, ydata, *args, **kwargs)
 
+
+class Extractor(object):
+
+    PARAMS = {}
+    FEATURES = []
+
+    @classmethod
+    def features(cls, data_list, *args, **kwargs):
+        features = np.full((len(data_list), len(cls.FEATURES)), np.nan)
+        nominalfeats = [{} for _ in len(features)]
+        for i, data_elm in izip(count(), data_list):
+            feats = cls.features_from_instance(data_elm, *args, **kwargs)
+            try:
+                # assign to row. Note that a list of strings parsable to float is ok
+                features[i] = feats
+            except ValueError:
+                # problem... did feats has non numeric values (non-parsable to float?)
+                # proceed element wise, not fast but sure:
+                for j, feat in enumerate(feats):
+                    try:
+                        features[i, j] = feat
+                    except ValueError:
+                        # feat is not a number nor a string convertible (e.g., '5.5')
+                        # assign an incremental integer. Two equal feats (according to
+                        # their hash) will return the same number. this means equality for strings
+                        val = nominalfeats[j].get(feat, None)
+                        if val is None:
+                            val = nominalfeats[j][feat] = len(nominalfeats[j])
+                        features[i, j] = val
+        return features
+
+    @classmethod
+    def features_from_instance(cls, instance_data, *args, **kwargs):
+        raise NotImplementedError("features_from_instance not implemented")
 
 
 if __name__ == "__main__":

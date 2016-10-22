@@ -12,7 +12,7 @@ from sklearn.metrics.classification import precision_recall_fscore_support, conf
 from sklearn.metrics import roc_curve, auc
 from itertools import izip, cycle, count
 from sklearn.utils.multiclass import unique_labels
-from core import utils
+from seiskitlearn.core import utils
 
 
 class Eval(object):
