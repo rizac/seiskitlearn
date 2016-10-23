@@ -1,1 +1,1 @@
-An experimental project to perform machine learning techinques fith focus on seismic time series data
+An experimental project to perform machine learning techniques with focus on seismic time series data

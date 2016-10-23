@@ -9,7 +9,8 @@ from sklearn.linear_model.logistic import LogisticRegression, LogisticRegression
 from seiskitlearn.core.classification import fix_array
 from seiskitlearn.core.evaluation import Eval, classindex, classlabel
 import pytest
-from sklearn.metrics.classification import brier_score_loss, log_loss
+from sklearn.metrics.classification import brier_score_loss, log_loss,\
+    precision_recall_fscore_support
 
 class Test(unittest.TestCase):
 
@@ -32,6 +33,23 @@ class Test(unittest.TestCase):
 
 
     def testCM_auc(self):
+        
+        data1 = precision_recall_fscore_support(np.array([1, 0, 0, 1, 1, 2]),
+                                                np.array([1, 1, 2, 0, 0, 2]), labels=[0,1])
+        
+        data2 = precision_recall_fscore_support(np.array([1, 0, 0, 1, 1, 2]), 
+                                                np.array([1, 1, 2, 0, 0, 2]))
+        
+        assert np.array([np.array_equal(d1, d2[:2]) for d1, d2 in zip(data1, data2)]).all()
+        
+        data1 = precision_recall_fscore_support(np.array([1, 0, 0, 1, 1, 2]),
+                                                np.array([1, 1, 2, 0, 0, 2]), labels=[0,1],
+                                                average='macro')
+        
+        data2 = precision_recall_fscore_support(np.array([1, 0, 0, 1, 1, 2]), 
+                                                np.array([1, 1, 2, 0, 0, 2]), average='macro')
+        
+        
         s = Eval(np.array([1, 0, 0, 1, 1, 2]), np.array([[0, 1, 0],
                                                   [0, 1, 0],
                                                   [0, 0, 1],
