@@ -35,41 +35,67 @@ def lintrans(x, min_=0, max_=1):
 
 
 def sigmoid_fit(x, y, *args, **kwargs):
-    return curve_fit(sigmoid, xdata, ydata, *args, **kwargs)
+    return curve_fit(sigmoid, x, y, *args, **kwargs)
 
 
 class Extractor(object):
+    """Feature extractor. The user should call the method
+    ```features(data_list,...) for getting a numpy MxN matric of features
+    for training / testing / fitting any scikit learn classifier
+    **after** overriding the class method
+    ```features_from_instance```
+    **and** the class member
+    ```featurenames```
 
-    PARAMS = {}
-    FEATURES = []
+    :example:
+    ```
+        class MyExtractor(Extractor):
+            featurenames = ['mean', 'sum']
+
+            @classmethod
+            def features_from_instance(cls, instance, *args, **kwargs):
+                array = np.asarray(instance)
+                return array.mean(), array.sum()
+
+        # and then:
+
+        data = [...]                            # Whatever ...
+        features = MyExtractor.features(data)   # With optional positional or nominal args,
+                                                # if needed inside `features` method.
+                                                # In this case, no arguments are supplied
+        feature_names = MyExtractor.featurenames
+    ```
+    """
+
+    params = {}
+    """Optional class parameters (as dict) accessible in `feature_from_instance`"""
+    featurenames = []
+    """The array (list tuple numpy array) of feature names. The length of the array/list
+    returned by `feature_from_instance` must match the length of this array
+    """
 
     @classmethod
     def features(cls, data_list, *args, **kwargs):
-        features = np.full((len(data_list), len(cls.FEATURES)), np.nan)
-        nominalfeats = [{} for _ in len(features)]
-        for i, data_elm in izip(count(), data_list):
-            feats = cls.features_from_instance(data_elm, *args, **kwargs)
-            try:
-                # assign to row. Note that a list of strings parsable to float is ok
-                features[i] = feats
-            except ValueError:
-                # problem... did feats has non numeric values (non-parsable to float?)
-                # proceed element wise, not fast but sure:
-                for j, feat in enumerate(feats):
-                    try:
-                        features[i, j] = feat
-                    except ValueError:
-                        # feat is not a number nor a string convertible (e.g., '5.5')
-                        # assign an incremental integer. Two equal feats (according to
-                        # their hash) will return the same number. this means equality for strings
-                        val = nominalfeats[j].get(feat, None)
-                        if val is None:
-                            val = nominalfeats[j][feat] = len(nominalfeats[j])
-                        features[i, j] = val
-        return features
+        """Extracts features from data_list. This method basically returns a numpy NxM array
+        where N = len(data_list) and M is the length of the class method `featurenames` by calling
+        N times the abstract method `feature_from_instance` (which MUST be overridden by subclasses)
+        :param data_list a list/iterable/array of instances on which to extract their features by
+        means of `feature_from_instance`.
+        :param args: optional positional argument which will be passed to `feature_from_instance`
+        :param kwargs: optional nominal argument which will be passed to `feature_from_instance`
+        """
+        return np.array([cls.features_from_instance(elm, *args, **kwargs) for elm in data_list])
 
     @classmethod
-    def features_from_instance(cls, instance_data, *args, **kwargs):
+    def features_from_instance(cls, instance, *args, **kwargs):
+        """This abstract method performs the actual computaion on a single instance.
+        The returned value should match the length of the class attribute `featurenames`
+        If some values are nominal, it is up to the user to convert them to numeric if possible
+        (this allows homogeneus numpy arrays to be returned)
+        :param instance The instance on which to extract their features
+        :param args: optional positional argument passed from the class method `features`
+        :param kwargs: optional nominal argument passed from the class method `features`
+        """
         raise NotImplementedError("features_from_instance not implemented")
 
 

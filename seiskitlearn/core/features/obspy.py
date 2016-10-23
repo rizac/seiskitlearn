@@ -31,8 +31,8 @@ def max_distance(x, y, sigmoid_steepness, sigmoid_midpoint):
 
 class SigmoidExtractor(Extractor):
 
-    FEATURES = ['cum_sigmoid_steepness', 'cum_sigmoid_midpoint',
-                'x_of_cum_vs_sigmoid_max_vdist', 'x_of_cum_vs_sigmoid_max_vdist']
+    featurenames = ['cum_sigmoid_steepness', 'cum_sigmoid_midpoint',
+                    'x_of_cum_vs_sigmoid_max_vdist', 'x_of_cum_vs_sigmoid_max_vdist']
 
     @classmethod
     def features_from_instance(cls, trace):
